@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.Assertions.Comparers;
 using Platformer.Mechanics;
 using UnityAssert = UnityEngine.Assertions.Assert;
 
@@ -152,8 +153,8 @@ public class PlayModeTests
     [UnityTest]
     public IEnumerator InterruptJump()
     {
-        // Releasing space-key after interruptTime should result in player never getting higher than maxJumpHeight
-        float interruptTime = 0.2f;
+        // Releasing space-key after interruptTime should result in player never getting higher than shortJumpHeight
+        float interruptTime = 0.15f;
         float shortJumpHeight = 1f;
         // AT LEAST how long it takes for player to start dropping after releasing jump-key
         float dropStartDuration = 0.05f;
@@ -243,8 +244,7 @@ public class PlayModeTests
         // Assert that player is spawned to starting position again
         Vector3 endPos = player.position;
         Debug.Log($"Ending pos: {endPos}");
-        Assert.AreEqual(endPos, origPos);
-        Debug.Log($"Real ending pos: {endPos}");
+        AssertVectorsApproxEqual(endPos, origPos);
     }
 
     // Verifies that player dies falling out of map
@@ -270,7 +270,7 @@ public class PlayModeTests
         // Assert that player is spawned to starting position again
         Vector3 endPos = player.position;
         Debug.Log($"Ending pos: {endPos}");
-        Assert.AreEqual(endPos, origPos);
+        AssertVectorsApproxEqual(endPos, origPos);
     }
 
     // ========== MENU ==========
@@ -331,7 +331,7 @@ public class PlayModeTests
         yield return new WaitForSeconds(dropTime);
 
         // Assert that player has dropped back to original position
-        Assert.AreEqual(origPos, player.transform.position);
+        AssertVectorsApproxEqual(origPos, player.transform.position);
     }
 
 
@@ -409,19 +409,19 @@ public class PlayModeTests
         input.Press(keyboard.dKey);
         yield return new WaitForSeconds(moveDuration);
         input.Release(keyboard.dKey);
-        Assert.AreEqual(endPos, player.transform.position);
+        AssertVectorsApproxEqual(endPos, player.transform.position);
 
         // Assert that can't move left
         input.Press(keyboard.aKey);
         yield return new WaitForSeconds(moveDuration);
         input.Release(keyboard.aKey);
-        Assert.AreEqual(endPos, player.transform.position);
+        AssertVectorsApproxEqual(endPos, player.transform.position);
 
         // Assert that can't jump
         input.Press(keyboard.spaceKey);
         yield return new WaitForSeconds(moveDuration);
         input.Release(keyboard.spaceKey);
-        Assert.AreEqual(endPos, player.transform.position);
+        AssertVectorsApproxEqual(endPos, player.transform.position);
     }
 
     // ========== HELPER METHODS ========== 
@@ -435,6 +435,14 @@ public class PlayModeTests
             o.gameObject.SetActive(false);
         }
         Debug.Log("Disabled all enemies");
+    }
+
+    // Asserts that 2 vectors are approximately equal
+    private void AssertVectorsApproxEqual(Vector3 v1, Vector3 v2, float tolerance = 0.01f)
+    {
+        UnityAssert.AreApproximatelyEqual(v1.x, v2.x, tolerance);
+        UnityAssert.AreApproximatelyEqual(v1.y, v2.y, tolerance);
+        UnityAssert.AreApproximatelyEqual(v1.z, v2.z, tolerance);
     }
 
 }
