@@ -50,24 +50,6 @@ public class PlayModeTests
         yield return null;
     }
 
-    // Verifies that test set up initialized correctly
-    [Test]
-    public void TestSetup()
-    {
-        Assert.That(InputSystem.devices, Has.Exactly(1).TypeOf<Keyboard>());
-    }
-
-    // Verifies that player character exists in the game
-    [UnityTest]
-    public IEnumerator GameStart()
-    {
-        yield return new WaitForEndOfFrame();
-        GameObject player = GameObject.Find("Player");
-        Assert.NotNull(player);
-        Assert.True(player.activeInHierarchy);
-    }
-
-
     // ========== MOVEMENT TESTS ==========
 
     // Verifies that player can be moved to both directions
