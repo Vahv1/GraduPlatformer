@@ -407,8 +407,7 @@ public class PlayModeTests
     [UnityTest]
     public IEnumerator FlipEnemySprite()
     {
-        // TODO figure out how to timeout this if WaitUntils are never satisfied
-        float timeoutLimit = 10f;
+        float timeout = 10f;
         // Test not started until enemy is this far away from PatrolPath start/end
         float startPointThreshold = 0.5f; 
         // Move player to position where it's close to an enemy
@@ -424,9 +423,18 @@ public class PlayModeTests
         float ppStartX = pp.GetComponent<PatrolPath>().startPosition.x + pp.transform.position.x;
         float ppEndX = pp.GetComponent<PatrolPath>().endPosition.x + pp.transform.position.x;
 
-        // Wait until enemy is not at the end points of patrol path to avoid weird test fails
-        yield return new WaitUntil(() => enemy.transform.position.x - ppEndX < -startPointThreshold
-        && enemy.transform.position.x - ppStartX > startPointThreshold);
+        // Wait until enemy is not close to end points of patrol path to avoid weird test fails
+        while (enemy.transform.position.x - ppEndX > -startPointThreshold || enemy.transform.position.x - ppStartX < startPointThreshold)
+        {
+            yield return null;
+            timeout -= Time.deltaTime;
+            if (timeout < 0)
+            {
+                Debug.Log("Timeout while waiting for enemy to be further away from patrol path end points");
+                Assert.Fail();
+                break;
+            }
+        }
 
         // Save enemy startPosX
         float startPosX = enemy.transform.position.x;
@@ -539,6 +547,7 @@ public class PlayModeTests
     [UnityTest]
     public IEnumerator PlayerBounceAfterEnemyKill()
     {
+        float timeout = 3f;
         float bounceHeight = 0.1f;
         float bounceDuration = 0.2f;
         float jumpDuration = 1f;
@@ -559,8 +568,18 @@ public class PlayModeTests
         yield return new WaitForSeconds(jumpDuration / 2);
         input.Release(keyboard.spaceKey);
 
-        // Wait until enemy has died and save player position at moment of its death
-        yield return new WaitUntil(() => enemyCollider.enabled == false);
+        // Wait until enemy has died
+        while(enemyCollider.enabled != false)
+        {
+            yield return null;
+            timeout -= Time.deltaTime;
+            if (timeout < 0)
+            {
+                Debug.Log("Timeout while waiting for enemy to die (collider.enabled == false)");
+                Assert.Fail();
+                break;
+            }
+        }
         Vector3 playerPosAtKill = player.transform.position;
         Debug.Log($"PlayerPos at kill: {playerPosAtKill.y}");
 
