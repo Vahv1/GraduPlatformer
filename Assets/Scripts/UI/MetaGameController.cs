@@ -32,7 +32,7 @@ namespace Platformer.UI
         // ===========================================================
         public void MenuInput(InputAction.CallbackContext val)
         {
-            if (val.performed) ToggleMainMenu(show: !showMainCanvas);
+            if (val.performed) ToggleMainMenu(!showMainCanvas);
         }
         // ===========================================================
 

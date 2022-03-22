@@ -17,7 +17,10 @@ namespace Platformer.Core
 
         public T First { get { return items[0]; } }
 
-        public void Clear() => items.Clear();
+        public void Clear()
+        {
+            items.Clear();
+        }
 
         public bool Contains(T item) => items.Contains(item);
 
