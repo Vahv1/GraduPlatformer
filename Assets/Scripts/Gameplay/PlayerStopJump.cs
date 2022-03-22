@@ -1,5 +1,6 @@
 using Platformer.Core;
 using Platformer.Mechanics;
+using UnityEngine;
 
 namespace Platformer.Gameplay
 {
@@ -13,7 +14,8 @@ namespace Platformer.Gameplay
 
         public override void Execute()
         {
-
+            // CUSTOM ADDITION TO TRY AND PREVENT CREAM FROM CRASHING AT THIS FILE
+            Debug.Log("PlayerStopJump executed");
         }
     }
 }
