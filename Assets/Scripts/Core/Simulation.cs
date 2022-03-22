@@ -49,7 +49,7 @@ namespace Platformer.Core
         /// <returns>The event.</returns>
         /// <param name="tick">Tick.</param>
         /// <typeparam name="T">The event type parameter.</typeparam>
-        static public T Schedule<T>(float tick = 0) where T : Event, new()
+        static public T Schedule<T>(float tick=0) where T : Event, new()
         {
             var ev = New<T>();
             ev.tick = Time.time + tick;

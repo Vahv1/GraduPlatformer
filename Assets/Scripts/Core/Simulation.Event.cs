@@ -22,7 +22,10 @@ namespace Platformer.Core
 
             public abstract void Execute();
 
-            public virtual bool Precondition() => true;
+            public virtual bool Precondition()
+            { 
+                return true;
+            }
 
             internal virtual void ExecuteEvent()
             {
