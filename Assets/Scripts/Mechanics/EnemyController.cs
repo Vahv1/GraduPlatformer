@@ -21,7 +21,10 @@ namespace Platformer.Mechanics
         internal AudioSource _audio;
         SpriteRenderer spriteRenderer;
 
-        public Bounds Bounds => _collider.bounds;
+        public Bounds Bounds 
+        {   
+            get { return _collider.bounds; }
+        }
 
         void Awake()
         {

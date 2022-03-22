@@ -49,10 +49,25 @@ namespace Platformer.Core
         /// <returns>The event.</returns>
         /// <param name="tick">Tick.</param>
         /// <typeparam name="T">The event type parameter.</typeparam>
-        static public T Schedule<T>(float tick=0) where T : Event, new()
+        static public T Schedule<T>(float tick) where T : Event, new()
         {
             var ev = New<T>();
             ev.tick = Time.time + tick;
+            eventQueue.Push(ev);
+            return ev;
+        }
+
+        // CUSTOM ADDITION SO OPTIONAL PARAMETER CAN BE REMOVED FROM METHOD ABOVE
+        // AND CREAM PARSE WONT FAIL
+        /// <summary>
+        /// Schedule an event for a future tick, and return it.
+        /// </summary>
+        /// <returns>The event.</returns>
+        /// <typeparam name="T">The event type parameter.</typeparam>
+        static public T Schedule<T>() where T : Event, new()
+        {
+            var ev = New<T>();
+            ev.tick = Time.time;
             eventQueue.Push(ev);
             return ev;
         }
