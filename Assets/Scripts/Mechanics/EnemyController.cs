@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Platformer.Gameplay;
 using UnityEngine;
-using static Platformer.Core.Simulation;
+using Platformer.Core;
 
 namespace Platformer.Mechanics
 {
@@ -36,7 +36,7 @@ namespace Platformer.Mechanics
             var player = collision.gameObject.GetComponent<PlayerController>();
             if (player != null)
             {
-                var ev = Schedule<PlayerEnemyCollision>();
+                var ev = Simulation.Schedule<PlayerEnemyCollision>();
                 ev.player = player;
                 ev.enemy = this;
             }

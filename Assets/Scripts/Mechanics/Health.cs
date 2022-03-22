@@ -1,7 +1,7 @@
 using System;
 using Platformer.Gameplay;
 using UnityEngine;
-using static Platformer.Core.Simulation;
+using Platformer.Core;
 
 namespace Platformer.Mechanics
 {
@@ -39,7 +39,7 @@ namespace Platformer.Mechanics
             currentHP = Mathf.Clamp(currentHP - 1, 0, maxHP);
             if (currentHP == 0)
             {
-                var ev = Schedule<HealthIsZero>();
+                var ev = Simulation.Schedule<HealthIsZero>();
                 ev.health = this;
             }
         }
