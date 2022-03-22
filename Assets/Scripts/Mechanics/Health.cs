@@ -15,10 +15,10 @@ namespace Platformer.Mechanics
         /// </summary>
         public int maxHP = 1;
 
-        /// <summary>
-        /// Indicates if the entity should be considered 'alive'.
-        /// </summary>
-        public bool IsAlive => currentHP > 0;
+        public bool IsAlive 
+        { 
+            get { return currentHP > 0; }
+        }
 
         int currentHP;
 

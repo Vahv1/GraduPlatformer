@@ -4,7 +4,6 @@ using UnityEngine;
 using Platformer.Gameplay;
 using Platformer.Core;
 using Platformer.Model;
-using Platformer.Core;
 using UnityEngine.InputSystem;
 
 namespace Platformer.Mechanics
@@ -41,7 +40,10 @@ namespace Platformer.Mechanics
         internal Animator animator;
         readonly PlatformerModel model = Simulation.GetModel<PlatformerModel>();
 
-        public Bounds Bounds => collider2d.bounds;
+        public Bounds Bounds
+        {
+            get { return collider2d.bounds; }
+        }
 
         // Custom addition to class for switching to new input system
         // ===========================================================

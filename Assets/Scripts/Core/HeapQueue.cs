@@ -22,11 +22,20 @@ namespace Platformer.Core
             items.Clear();
         }
 
-        public bool Contains(T item) => items.Contains(item);
+        public bool Contains(T item)
+        {
+            return items.Contains(item);
+        }
 
-        public void Remove(T item) => items.Remove(item);
+        public void Remove(T item)
+        { 
+            items.Remove(item); 
+        }
 
-        public T Peek() => items[0];
+        public T Peek()
+        {
+            return items[0];
+        }
 
         public HeapQueue()
         {
@@ -64,7 +73,10 @@ namespace Platformer.Core
         }
 
 
-        int Compare(T A, T B) => A.CompareTo(B);
+        int Compare(T A, T B)
+        { 
+            return A.CompareTo(B); 
+        }
 
         void SiftDown(int startpos, int pos)
         {
