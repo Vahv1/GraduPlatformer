@@ -1,5 +1,4 @@
 using Platformer.Core;
-using Platformer.Mechanics;
 using UnityEngine;
 
 namespace Platformer.Gameplay
@@ -10,8 +9,6 @@ namespace Platformer.Gameplay
     /// <typeparam name="PlayerStopJump"></typeparam>
     public class PlayerStopJump : Simulation.Event<PlayerStopJump>
     {
-        public PlayerController player;
-
         public override void Execute()
         {
             // CUSTOM ADDITION TO TRY AND PREVENT CREAM FROM CRASHING AT THIS FILE
