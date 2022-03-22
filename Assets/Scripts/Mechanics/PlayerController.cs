@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Platformer.Gameplay;
-using static Platformer.Core.Simulation;
+using Platformer.Core;
 using Platformer.Model;
 using Platformer.Core;
 using UnityEngine.InputSystem;
@@ -64,7 +64,7 @@ namespace Platformer.Mechanics
         private void StopJump()
         {
             stopJump = true;
-            Schedule<PlayerStopJump>().player = this;
+            Simulation.Schedule<PlayerStopJump>().player = this;
         }
         
         // ==========================================================
@@ -117,14 +117,14 @@ namespace Platformer.Mechanics
                 case JumpState.Jumping:
                     if (!IsGrounded)
                     {
-                        Schedule<PlayerJumped>().player = this;
+                        Simulation.Schedule<PlayerJumped>().player = this;
                         jumpState = JumpState.InFlight;
                     }
                     break;
                 case JumpState.InFlight:
                     if (IsGrounded)
                     {
-                        Schedule<PlayerLanded>().player = this;
+                        Simulation.Schedule<PlayerLanded>().player = this;
                         jumpState = JumpState.Landed;
                     }
                     break;

@@ -17,7 +17,7 @@ namespace Platformer.Mechanics
         /// </summary>
         /// <param name="speed"></param>
         /// <returns></returns>
-        public Mover CreateMover(float speed = 1) => new Mover(this, speed);
+        public Mover CreateMover(float speed=1) => new Mover(this, speed);
 
         void Reset()
         {

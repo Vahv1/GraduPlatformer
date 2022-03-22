@@ -1,6 +1,6 @@
 using Platformer.Gameplay;
 using UnityEngine;
-using static Platformer.Core.Simulation;
+using Platformer.Core;
 
 
 namespace Platformer.Mechanics
@@ -54,7 +54,7 @@ namespace Platformer.Mechanics
             if (controller != null)
                 collected = true;
             //send an event into the gameplay system to perform some behaviour.
-            var ev = Schedule<PlayerTokenCollision>();
+            var ev = Simulation.Schedule<PlayerTokenCollision>();
             ev.token = this;
             ev.player = player;
         }
