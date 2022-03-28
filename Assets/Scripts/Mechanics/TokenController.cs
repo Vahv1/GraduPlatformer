@@ -41,7 +41,7 @@ namespace Platformer.Mechanics
         void Update()
         {
             //if it's time for the next frame...
-            if (Time.time - nextFrameTime > (1f / frameRate))
+            if (Time.timeSinceLevelLoad - nextFrameTime > (1f / frameRate))
             {
                 //update all tokens with the next animation frame.
                 for (var i = 0; i < tokens.Length; i++)
