@@ -408,7 +408,7 @@ public class PlayModeTests
         AssertVectorsApproxEqual(endPos, player.transform.position);
     }
 
-    // ========== Test Set 3 Improvements ========== 
+    // ========== Test Set 2 Improvements ========== 
 
     // Verifies that player has HP again after respawning
     // Kills at least mutations AOR13, AOR14, AOR15, AOR16, UOI121, UOI123, UOI126
