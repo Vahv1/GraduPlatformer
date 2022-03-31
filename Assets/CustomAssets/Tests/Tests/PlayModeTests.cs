@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -410,7 +411,7 @@ public class PlayModeTests
     // ========== Test Set 3 Improvements ========== 
 
     // Verifies that player has HP again after respawning
-    // Kills at least mutations AOR13, AOR14, AOR15, AOR16..., UOI121, UOI123, 
+    // Kills at least mutations AOR13, AOR14, AOR15, AOR16, UOI121, UOI123, UOI126
     [UnityTest]
     public IEnumerator SpawnWithHealth()
     {
@@ -722,12 +723,92 @@ public class PlayModeTests
         input.Release(keyboard.spaceKey);
     }
 
-    // Verifies that jump sound effect is played when player jumps
-    // Should kill at least mutations UOI135, UOI136, UOI137
+    // Verifies that player run audio effect is played correctly
+    // Should kill at least mutations LCR5, PRV3, PRV4, ROR19, ROR20, ROR21, ROR22, ROR23, ROR24, UOI102
+    // UOI114, UOI115, UOI116, UOI117
     [UnityTest]
-    public IEnumerator PlayerJumpAudio()
+    public IEnumerator PlayerRunAudio()
     {
-        yield return null;
+        // How much can played amount of sounds differ from expected amount
+        int playedSoundsAmtTolerance = 1;
+        float moveRightDuration = 3f;
+        float moveLeftDuration = 3f;
+        float runAnimationLength = 0.604f;
+
+        // Expected amount when 1 sound played at start of the run and then 1 sound for every animation loop
+        int expectedSoundsAmt = (int)Math.Floor(moveRightDuration / runAnimationLength + 1);
+
+        // No enemies needed for this test, disable so they won't interrupt running
+        DisableEnemies();
+
+        // Expected amount of audio sources when no sound effects are played
+        int defaultAudioSourceAmt = GameObject.FindObjectsOfType<AudioSource>().Length;
+        int currentAudioSourceAmt;
+
+        // List of sound effect objects that are used during a run
+        List<GameObject> playedSoundObjects = new List<GameObject>();
+
+        // Move right
+        Debug.Log("Starting run to right");
+        input.Press(keyboard.dKey);
+
+        Debug.Log("Default audio amount: " + defaultAudioSourceAmt);
+
+        // Monitor for given duration
+        while(moveRightDuration > 0)
+        {
+            yield return null;
+            moveRightDuration -= Time.deltaTime;
+
+            // Assert that maximum of two sound effects are played at once when player is running
+            currentAudioSourceAmt = GameObject.FindObjectsOfType<AudioSource>().Length;
+            Assert.IsTrue(currentAudioSourceAmt <= defaultAudioSourceAmt + 2);
+
+            // Save all soundObjects used to the amount can be asserted later
+            GameObject runSoundObj = GameObject.Find("One shot audio");
+            
+            if (runSoundObj != null)
+            {
+                if (!playedSoundObjects.Contains(runSoundObj))
+                {
+                    playedSoundObjects.Add(runSoundObj);
+                }
+            }
+        }
+        input.Release(keyboard.dKey);
+
+        // Assert that correct amount of sound effects was played during the running
+        Debug.Log($"played sounds amt: {playedSoundObjects.Count}, expected sounds amt: {expectedSoundsAmt}");
+        UnityAssert.AreApproximatelyEqual(playedSoundObjects.Count, expectedSoundsAmt, playedSoundsAmtTolerance);
+
+        // Empty played sound objects list before running to other direction
+        playedSoundObjects.Clear();
+
+        // Move left
+        Debug.Log("Starting run to right");
+        input.Press(keyboard.aKey);
+        while (moveLeftDuration > 0)
+        {
+            yield return null;
+            moveLeftDuration -= Time.deltaTime;
+
+            // Assert that maximum of two sound effects are played at once when player is running
+            currentAudioSourceAmt = GameObject.FindObjectsOfType<AudioSource>().Length;
+            Assert.IsTrue(currentAudioSourceAmt <= defaultAudioSourceAmt + 2);
+
+            GameObject runSoundObj = GameObject.Find("One shot audio");
+            if (runSoundObj != null)
+            {
+                if (!playedSoundObjects.Contains(runSoundObj))
+                {
+                    playedSoundObjects.Add(runSoundObj);
+                }
+            }
+        }
+        input.Release(keyboard.aKey);
+
+        // Assert that correct amount of sound effects was played during the running
+        UnityAssert.AreApproximatelyEqual(playedSoundObjects.Count, expectedSoundsAmt, playedSoundsAmtTolerance);
     }
 
 
