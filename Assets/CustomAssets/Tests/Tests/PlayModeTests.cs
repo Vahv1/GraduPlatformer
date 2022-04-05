@@ -134,15 +134,18 @@ public class PlayModeTests
     }
 
     // Verifies that player can interrupt jump by releasing space key
+    // Updated version kills at least mutations UOI17 (After_UOI140) and UOI27 (After_UOI140)
     [UnityTest]
     public IEnumerator InterruptJump()
     {
+        float timeout = 3f; // Stop test if timeout has passed
+
         // Releasing space-key after interruptTime should result in player never getting higher than shortJumpHeight
         float interruptTime = 0.15f;
         float shortJumpHeight = 1f;
-        // AT LEAST how long it takes for player to start dropping after releasing jump-key
-        float dropStartDuration = 0.05f;
-        Debug.Log($"origPos.y + maxJumpHeight: {origPos.y + shortJumpHeight}");
+
+        float maxHeight = origPos.y + shortJumpHeight; // Player should never get above this
+        Debug.Log($"maxHeight (origPos + shortJumpHeight): {origPos.y + shortJumpHeight}");
 
         // Jump
         input.Press(keyboard.spaceKey);
@@ -150,33 +153,17 @@ public class PlayModeTests
         // Release after interrupt time
         input.Release(keyboard.spaceKey);
 
-        // Save highest position and compare to original position, should be less than shortJumpHeight
-        Vector2 releasePos = player.position;
-        Debug.Log($"Y-position at release was: {releasePos.y}");
-        Assert.Less(releasePos.y, origPos.y + shortJumpHeight);
-
-        // Assert that jump 'overflows' for a little while after releasing jump-key
-        yield return new WaitForSeconds(dropStartDuration);
-        Debug.Log($"Y-position after dropStartDuration: {player.position.y}");
-        Assert.Greater(player.position.y, releasePos.y);
-
-        // Wait until player starts dropping down
-        while (player.position.y >= releasePos.y)
-        {
-            yield return null;
-        }
-        Debug.Log("Player started dropping down");
-
-        // Init lastFramePos as high number at start
-        Vector2 lastFramePos = Vector2.up * 10;
-        // Check that position gets lower in each frame after dropping down, until player is on the ground again
+        // Check until player is back on original ground position
         while (!Mathf.Approximately(player.position.y, origPos.y))
         {
-            Assert.Less(player.position.y, lastFramePos.y);
-            lastFramePos = player.position;
             yield return null;
+
+            // Stop loop if timeout has passed
+            timeout -= Time.deltaTime;
+            if (timeout < 0) Assert.Fail();
+
+            Assert.Less(player.position.y, maxHeight);
         }
-        Debug.Log("Player landed");
     }
 
     // Verifies that player can't jump again until they have landed from previous jump
@@ -432,7 +419,7 @@ public class PlayModeTests
     }
 
     // Verifies that player can collect multiple tokens in quick succession
-    // Kills at least mutations ASR9, ASR10, ASR11
+    // Kills at least mutations ASR11
     [UnityTest]
     public IEnumerator CollectMultipleTokens()
     {
@@ -678,7 +665,7 @@ public class PlayModeTests
     }
 
     // Verifies that token collect animation is played when player hits token
-    // Should kill at least mutations UOI62
+    // Should kill at least mutations UOI62, ASR9, ASR10
     [UnityTest]
     public IEnumerator TokenCollectAnimation()
     {
@@ -811,7 +798,25 @@ public class PlayModeTests
         UnityAssert.AreApproximatelyEqual(playedSoundObjects.Count, expectedSoundsAmt, playedSoundsAmtTolerance);
     }
 
+    // Verifies that player sprite is flipped when it changes facing direction
+    // Kills at least mutations UOI28 (After_UOI140)
+    [UnityTest]
+    public IEnumerator FlipPlayerSprite()
+    {
+        SpriteRenderer playerSr = player.GetComponent<SpriteRenderer>();
 
+        // Move player left and assert that sprite is flipped
+        input.Press(keyboard.aKey);
+        yield return null;
+        Assert.IsTrue(playerSr.flipX);
+        input.Release(keyboard.aKey);
+
+        // Move player right and assert that sprite is not flipped
+        input.Press(keyboard.dKey);
+        yield return null;
+        Assert.IsTrue(!playerSr.flipX);
+        input.Release(keyboard.dKey);
+    }
 
     // ========== HELPER METHODS ========== 
 
